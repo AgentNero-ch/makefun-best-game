@@ -12,7 +12,7 @@
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-game.ts';
@@ -39,3 +39,7 @@ writeFileSync(
     game_path_max_bytes: 1000,
   }),
 );
+
+const gameFileCount = readdirSync(join(out, 'game'), { recursive: true, withFileTypes: true }).filter((entry) => entry.isFile()).length;
+const dossierBytes = statSync(join(out, 'dossier.json')).size;
+console.log(`ION DRIFT: ${gameFileCount} files under game/, dossier.json ${dossierBytes} bytes`);
